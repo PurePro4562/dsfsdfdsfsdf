@@ -12,74 +12,6 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #0f172a; /* Dark Blue-Gray */
-            color: #f8fafc;
-        }
-        .container {
-            text-align: center;
-            padding: 30px;
-            border-radius: 12px;
-            background: #1e293b;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            width: 90%;
-            max-width: 400px;
-            border: 1px solid #334155;
-        }
-        h1 { font-size: 1.5rem; margin-bottom: 20px; color: #38bdf8; }
-        .key-box {
-            background: #0f172a;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            border: 1px solid #38bdf8;
-            word-break: break-all;
-            color: #38bdf8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 1.5em;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #38bdf8;
-            color: #0f172a;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        button:hover { background-color: #0ea5e9; }
-        button:active { transform: scale(0.98); }
-        .status-msg { margin-top: 10px; font-size: 0.8rem; color: #94a3b8; }
-    </style>
-</head>
-<body>
-
-    <div class="container" id="main-content">
-        <h1>Your Generated Key</h1>
-        <div class="key-box" id="key-display">Generating...</div>
-        <button onclick="copyKey()" id="copy-btn">Copy to Clipboard</button>
-        <div class="status-msg" id="status-text">Complete the process to see your key.</div>
-    </div>
-
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXA Key Generation</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
             background-color: #0f172a;
             color: #f8fafc;
         }
@@ -128,14 +60,14 @@
 <body>
 
     <div class="container" id="main-content">
-        <h1>NEXA System</h1>
+        <h1>NEXUS System</h1>
         <div class="key-box" id="key-display">Verifying...</div>
         <button onclick="copyKey()" id="copy-btn">Copy to Clipboard</button>
         <div class="status-msg" id="status-text">Checking session status...</div>
     </div>
 
     <script>
-        const STORAGE_KEY = "nexa_user_key";
+        const STORAGE_KEY = "NEXUS_user_key";
 
         function initialize() {
             const referrer = document.referrer.toLowerCase();
@@ -162,7 +94,7 @@
 
             // 3. Generate New Key and Save it
             const randomDigits = Math.floor(Math.random() * 9000000000000) + 1000000000000;
-            const newKey = "NEXA-" + randomDigits;
+            const newKey = "NEXUS-" + randomDigits;
             
             localStorage.setItem(STORAGE_KEY, newKey);
             displayKey(newKey, "New key generated successfully.");
@@ -194,7 +126,5 @@
             setTimeout(initialize, 500);
         };
     </script>
-</body>
-</html>
 </body>
 </html>
