@@ -3,100 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generating Your Key...</title>
+    <title>NEXA Key Generation</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #f4f4f9;
-            color: #333;
+            background-color: #0f172a; /* Dark Blue-Gray */
+            color: #f8fafc;
         }
         .container {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
+            border-radius: 12px;
+            background: #1e293b;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #334155;
+        }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; color: #38bdf8; }
+        .key-box {
+            background: #0f172a;
+            padding: 15px;
             border-radius: 8px;
-            background: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            border: 1px solid #38bdf8;
+            word-break: break-all;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 1.5em;
         }
         button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
+            width: 100%;
+            padding: 12px;
+            background-color: #38bdf8;
+            color: #0f172a;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
         }
+        button:hover { background-color: #0ea5e9; }
+        button:active { transform: scale(0.98); }
+        .status-msg { margin-top: 10px; font-size: 0.8rem; color: #94a3b8; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="loader"></div>
-        <h1>Generating Key...</h1>
-        <p>Your download should start automatically.</p>
-        <p>If it didn't, click the button below:</p>
-        <button onclick="generateAndDownload()">Download key.txt</button>
+    <div class="container" id="main-content">
+        <h1>Your Generated Key</h1>
+        <div class="key-box" id="key-display">Generating...</div>
+        <button onclick="copyKey()" id="copy-btn">Copy to Clipboard</button>
+        <div class="status-msg" id="status-text">Complete the process to see your key.</div>
     </div>
 
     <script>
-    function generateAndDownload() {
-        const referrer = document.referrer.toLowerCase();
-        
-        // CHECK: If the user didn't come from a LootLabs domain, deny access.
-        // Also allows 'localhost' or empty for your own testing if needed.
-        const isAuthorized = referrer.includes("loot") || 
-                             referrer.includes("loot-link") || 
-                             window.location.hostname === "localhost";
+        function generateKey() {
+            const referrer = document.referrer.toLowerCase();
+            
+            // Authorization Check
+            const isAuthorized = referrer.includes("loot") || 
+                                 referrer.includes("loot-link") || 
+                                 window.location.hostname === "localhost";
 
-        if (!isAuthorized) {
-            document.querySelector('.container').innerHTML = `
-                <div style="color: #e74c3c; padding: 20px;">
-                    <svg style="width: 48px; height: 48px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                    </svg>
-                    <h1>Access Denied</h1>
+            if (!isAuthorized) {
+                document.getElementById('main-content').innerHTML = `
+                    <h1 style="color: #ef4444;">Access Denied</h1>
                     <p>Please complete the steps at the official link first.</p>
-                </div>
-            `;
-            return;
+                `;
+                return;
+            }
+
+            // Generate Random Key
+            const randomDigits = Math.floor(Math.random() * 9000000000000) + 1000000000000;
+            const fullKey = "NEXA-" + randomDigits;
+            
+            // Display Key
+            document.getElementById('key-display').innerText = fullKey;
+            document.getElementById('status-text').innerText = "Key generated successfully.";
         }
 
-        // Generate the key
-        const randomDigits = Math.floor(Math.random() * 9000000000000) + 1000000000000;
-        const content = "NEXA-" + randomDigits;
-        
-        const blob = new Blob([content], { type: 'text/plain' });
-        const element = document.createElement('a');
-        element.href = URL.createObjectURL(blob);
-        element.download = "key.txt";
-        
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    }
+        function copyKey() {
+            const keyText = document.getElementById('key-display').innerText;
+            if (keyText === "Generating...") return;
 
-    window.onload = function() {
-        setTimeout(generateAndDownload, 500);
-    };
-</script>
+            navigator.clipboard.writeText(keyText).then(() => {
+                const btn = document.getElementById('copy-btn');
+                const originalText = btn.innerText;
+                btn.innerText = "Copied!";
+                btn.style.backgroundColor = "#22c55e"; // Success green
+
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = "#38bdf8";
+                }, 2000);
+            });
+        }
+
+        // Run logic on load
+        window.onload = function() {
+            setTimeout(generateKey, 800);
+        };
+    </script>
 </body>
 </html>
