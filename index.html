@@ -66,11 +66,88 @@
         <div class="status-msg" id="status-text">Complete the process to see your key.</div>
     </div>
 
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXA Key Generation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .container {
+            text-align: center;
+            padding: 30px;
+            border-radius: 12px;
+            background: #1e293b;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #334155;
+        }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; color: #38bdf8; }
+        .key-box {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            border: 1px solid #38bdf8;
+            word-break: break-all;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 1.5em;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        button:hover { background-color: #0ea5e9; }
+        button:disabled { background-color: #475569; cursor: not-allowed; }
+        .status-msg { margin-top: 15px; font-size: 0.85rem; color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-content">
+        <h1>NEXA System</h1>
+        <div class="key-box" id="key-display">Verifying...</div>
+        <button onclick="copyKey()" id="copy-btn">Copy to Clipboard</button>
+        <div class="status-msg" id="status-text">Checking session status...</div>
+    </div>
+
     <script>
-        function generateKey() {
+        const STORAGE_KEY = "nexa_user_key";
+
+        function initialize() {
             const referrer = document.referrer.toLowerCase();
+            const existingKey = localStorage.getItem(STORAGE_KEY);
             
-            // Authorization Check
+            // 1. If they already have a key, just show it (prevents refresh spam)
+            if (existingKey) {
+                displayKey(existingKey, "Restored from previous session.");
+                return;
+            }
+
+            // 2. Security Check: Only generate if coming from LootLabs
             const isAuthorized = referrer.includes("loot") || 
                                  referrer.includes("loot-link") || 
                                  window.location.hostname === "localhost";
@@ -78,29 +155,33 @@
             if (!isAuthorized) {
                 document.getElementById('main-content').innerHTML = `
                     <h1 style="color: #ef4444;">Access Denied</h1>
-                    <p>Please complete the steps at the official link first.</p>
+                    <p>Please complete the ad-link steps to generate a key.</p>
                 `;
                 return;
             }
 
-            // Generate Random Key
+            // 3. Generate New Key and Save it
             const randomDigits = Math.floor(Math.random() * 9000000000000) + 1000000000000;
-            const fullKey = "NEXUS-" + randomDigits;
+            const newKey = "NEXA-" + randomDigits;
             
-            // Display Key
-            document.getElementById('key-display').innerText = fullKey;
-            document.getElementById('status-text').innerText = "Key generated successfully.";
+            localStorage.setItem(STORAGE_KEY, newKey);
+            displayKey(newKey, "New key generated successfully.");
+        }
+
+        function displayKey(key, message) {
+            document.getElementById('key-display').innerText = key;
+            document.getElementById('status-text').innerText = message;
         }
 
         function copyKey() {
             const keyText = document.getElementById('key-display').innerText;
-            if (keyText === "Generating...") return;
+            if (keyText === "Verifying..." || keyText.includes("Denied")) return;
 
             navigator.clipboard.writeText(keyText).then(() => {
                 const btn = document.getElementById('copy-btn');
                 const originalText = btn.innerText;
                 btn.innerText = "Copied!";
-                btn.style.backgroundColor = "#22c55e"; // Success green
+                btn.style.backgroundColor = "#22c55e";
 
                 setTimeout(() => {
                     btn.innerText = originalText;
@@ -109,10 +190,11 @@
             });
         }
 
-        // Run logic on load
         window.onload = function() {
-            setTimeout(generateKey, 800);
+            setTimeout(initialize, 500);
         };
     </script>
+</body>
+</html>
 </body>
 </html>
