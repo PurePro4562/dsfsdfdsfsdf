@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXA Key System</title>
+    <title>NEXUS Key System</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -58,14 +58,14 @@
 <body>
 
     <div class="container" id="main-content">
-        <h1>NEXA Key</h1>
+        <h1>NEXUS Key</h1>
         <div class="key-box" id="key-display">Loading...</div>
         <button onclick="copyKey()" id="copy-btn">Copy Key</button>
         <div class="status-msg" id="status-text">Validating session...</div>
     </div>
 
     <script>
-        const STORAGE_KEY = "nexa_persistent_key";
+        const STORAGE_KEY = "NEXUS_persistent_key";
 
         function handleKeyLogic() {
             const keyDisplay = document.getElementById('key-display');
@@ -97,7 +97,7 @@
 
             // 3. Generate exactly ONE new key and save it immediately
             const randomID = Math.floor(Math.random() * 9000000000000) + 1000000000000;
-            const newKey = "NEXA-" + randomID;
+            const newKey = "NEXUS-" + randomID;
             
             localStorage.setItem(STORAGE_KEY, newKey);
             keyDisplay.innerText = newKey;
