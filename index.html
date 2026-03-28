@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generating Your Key...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="loader"></div>
+        <h1>Generating Key...</h1>
+        <p>Your download should start automatically.</p>
+        <p>If it didn't, click the button below:</p>
+        <button onclick="generateAndDownload()">Download key.txt</button>
+    </div>
+
+    <script>
+        function generateAndDownload() {
+            // Generate a random string of numbers (13 digits like your example)
+            const randomDigits = Math.floor(Math.random() * 9000000000000) + 1000000000000;
+            const content = "NEXA-" + randomDigits;
+            
+            // Create a Blob containing the text
+            const blob = new Blob([content], { type: 'text/plain' });
+            
+            // Create an invisible link element
+            const element = document.createElement('a');
+            element.href = URL.createObjectURL(blob);
+            element.download = "key.txt";
+            
+            // Append to body, click it, and remove it
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // Trigger on page load
+        window.onload = function() {
+            // Short delay to ensure browser readiness
+            setTimeout(generateAndDownload, 500);
+        };
+    </script>
+</body>
+</html>
