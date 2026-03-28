@@ -59,15 +59,30 @@
 
     <script>
     function generateAndDownload() {
-        // CHECK: Only run if the user came from your LootLabs link
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('auth') !== 'verified') {
-            document.querySelector('.container').innerHTML = "<h1>Access Denied</h1><p>Please use the official link to access this file.</p>";
+        const referrer = document.referrer.toLowerCase();
+        
+        // CHECK: If the user didn't come from a LootLabs domain, deny access.
+        // Also allows 'localhost' or empty for your own testing if needed.
+        const isAuthorized = referrer.includes("loot") || 
+                             referrer.includes("loot-link") || 
+                             window.location.hostname === "localhost";
+
+        if (!isAuthorized) {
+            document.querySelector('.container').innerHTML = `
+                <div style="color: #e74c3c; padding: 20px;">
+                    <svg style="width: 48px; height: 48px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <h1>Access Denied</h1>
+                    <p>Please complete the steps at the official link first.</p>
+                </div>
+            `;
             return;
         }
 
+        // Generate the key
         const randomDigits = Math.floor(Math.random() * 9000000000000) + 1000000000000;
-        const content = "NEXUS-" + randomDigits;
+        const content = "NEXA-" + randomDigits;
         
         const blob = new Blob([content], { type: 'text/plain' });
         const element = document.createElement('a');
